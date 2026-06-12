@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="theme-color" content="#6366f1"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Prod Pro"/>
+<title>Productivité Pro</title>
+<link rel="manifest" id="manifest-placeholder"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8f9fb;min-height:100vh;max-width:430px;margin:0 auto;position:relative}
+input,select,textarea,button{font-family:inherit}
+.header{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:20px 16px 56px;position:relative}
+.header h1{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.header p{font-size:13px;opacity:.8;margin-top:3px}
+.tabs{background:#fff;box-shadow:0 2px 12px #0001;border-radius:16px;margin:0 12px;margin-top:-36px;position:relative;z-index:10;display:flex;overflow:hidden}
+.tab{flex:1;padding:12px 4px 10px;border:none;background:#fff;cursor:pointer;border-bottom:2.5px solid transparent;transition:all .2s}
+.tab.active{background:#eef2ff;border-bottom-color:#6366f1}
+.tab-icon{font-size:18px}
+.tab-label{font-size:10px;font-weight:700;color:#9ca3af;margin-top:2px}
+.tab.active .tab-label{color:#6366f1}
+.content{padding:20px 14px 80px}
+.section-title{font-size:20px;font-weight:700}
+.section-sub{color:#6b7280;font-size:13px;margin-top:2px;margin-bottom:16px}
+.btn{border:none;border-radius:8px;cursor:pointer;font-weight:600;padding:9px 18px;font-size:14px}
+.btn-primary{background:#6366f1;color:#fff}
+.btn-ghost{background:#f3f4f6;color:#374151}
+.btn-danger{background:#fef2f2;color:#ef4444}
+.btn-sm{padding:5px 12px;font-size:12px}
+.card{background:#fff;border:1.5px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:10px}
+.badge{font-size:11px;font-weight:600;border-radius:99px;padding:2px 8px;border:1px solid transparent}
+.progress-track{background:#e5e7eb;border-radius:99px;height:8px;overflow:hidden}
+.progress-fill{height:100%;border-radius:99px;transition:width .4s}
+.modal-overlay{display:none;position:fixed;inset:0;background:#00000066;z-index:100;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.modal-title{font-size:17px;font-weight:700}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:#9ca3af;line-height:1}
+.form-label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:5px}
+.form-input{width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;outline:none;background:#fff}
+.form-input:focus{border-color:#6366f1}
+.form-group{margin-bottom:14px}
+.row{display:flex;gap:8px;align-items:center}
+.filter-btn{padding:5px 14px;border-radius:99px;border:none;cursor:pointer;font-size:13px;font-weight:600;background:#f3f4f6;color:#6b7280}
+.filter-btn.active{background:#6366f1;color:#fff}
+.task-item{display:flex;gap:10px;align-items:flex-start;padding:12px;background:#fff;border:1.5px solid #e5e7eb;border-radius:10px;margin-bottom:8px}
+.check-btn{width:22px;height:22px;min-width:22px;border-radius:50%;border:2px solid #d1d5db;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;margin-top:1px}
+.check-btn.checked{background:#22c55e;border-color:#22c55e}
+.search-input{width:100%;padding:9px 12px 9px 36px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;outline:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.442 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z'/%3E%3C/svg%3E") no-repeat 10px center}
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.day-cell{border:1.5px solid #e5e7eb;border-radius:10px;overflow:hidden;min-height:90px;background:#fff}
+.day-cell.today{border-color:#6366f1;background:#eef2ff}
+.day-header{padding:6px 4px;text-align:center;background:#f9fafb;border-bottom:1px solid #e5e7eb}
+.day-cell.today .day-header{background:#6366f1}
+.day-name{font-size:9px;font-weight:600;color:#9ca3af}
+.day-cell.today .day-name{color:#ffffffaa}
+.day-num{font-size:16px;font-weight:800;color:#111}
+.day-cell.today .day-num{color:#fff}
+.day-tasks{padding:4px 3px}
+.day-task-chip{font-size:9px;padding:2px 4px;border-radius:4px;margin-bottom:2px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.stat-card{border-radius:12px;padding:12px 8px;text-align:center}
+.stat-icon{font-size:20px;margin-bottom:3px}
+.stat-val{font-size:20px;font-weight:800}
+.stat-lbl{font-size:10px;color:#6b7280;margin-top:2px;line-height:1.3}
+.step-item{display:flex;gap:8px;align-items:center;padding:8px 10px;border:1px solid #e0e7ff;border-radius:8px;margin-bottom:5px;background:#fafafe}
+.step-item.done{background:#f9fafb;border-color:#e5e7eb}
+.step-check{width:18px;height:18px;min-width:18px;border-radius:50%;border:2px solid #d1d5db;background:transparent;cursor:pointer;font-size:10px;color:#fff;display:flex;align-items:center;justify-content:center}
+.step-num{font-size:10px;font-weight:700;color:#d1d5db;min-width:18px}
+.add-step-btn{width:100%;padding:8px;border:1.5px dashed #d1d5db;border-radius:8px;background:transparent;color:#9ca3af;font-size:13px;cursor:pointer;font-weight:500;margin-top:4px}
+.goal-card{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:14px;margin-bottom:12px}
+.empty-state{text-align:center;padding:40px 0;color:#9ca3af}
+.empty-icon{font-size:40px;margin-bottom:10px}
+.install-banner{display:none;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:12px 14px;border-radius:12px;margin-bottom:16px;align-items:center;gap:10px}
+.install-banner.show{display:flex}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="header">
+    <h1>⚡ Productivité Pro</h1>
+    <p id="today-date"></p>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="setTab('dashboard')"><div class="tab-icon">🏠</div><div class="tab-label">Accueil</div></button>
+    <button class="tab" onclick="setTab('tasks')"><div class="tab-icon">✅</div><div class="tab-label">Tâches</div></button>
+    <button class="tab" onclick="setTab('goals')"><div class="tab-icon">🎯</div><div class="tab-label">Objectifs</div></button>
+    <button class="tab" onclick="setTab('planning')"><div class="tab-icon">📅</div><div class="tab-label">Planning</div></button>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+
+<!-- TASK MODAL -->
+<div class="modal-overlay" id="task-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="task-modal-title">Nouvelle tâche</span>
+      <button class="modal-close" onclick="closeModal('task-modal')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Titre *</label><input class="form-input" id="t-title" placeholder="Ex: Préparer la réunion"/></div>
+    <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="t-desc" rows="2" style="resize:vertical"></textarea></div>
+    <div class="form-group"><label class="form-label">Priorité</label>
+      <select class="form-input" id="t-priority">
+        <option value="haute">🔴 Haute</option>
+        <option value="moyenne" selected>🟡 Moyenne</option>
+        <option value="basse">🟢 Basse</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Catégorie</label>
+      <select class="form-input" id="t-cat">
+        <option>Personnel</option><option>Travail</option><option>Études</option><option>Santé</option><option>Finance</option><option>Autre</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Date d'échéance</label><input type="date" class="form-input" id="t-date"/></div>
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:4px">
+      <button class="btn btn-ghost" onclick="closeModal('task-modal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveTask()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- GOAL MODAL -->
+<div class="modal-overlay" id="goal-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="goal-modal-title">Nouvel objectif</span>
+      <button class="modal-close" onclick="closeModal('goal-modal')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Titre *</label><input class="form-input" id="g-title" placeholder="Ex: Apprendre le Python"/></div>
+    <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="g-desc" rows="2" style="resize:vertical"></textarea></div>
+    <div class="form-group"><label class="form-label">Catégorie</label>
+      <select class="form-input" id="g-cat">
+        <option>Personnel</option><option>Travail</option><option>Études</option><option>Santé</option><option>Finance</option><option>Autre</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Date limite</label><input type="date" class="form-input" id="g-deadline"/></div>
+    <div class="form-group"><label class="form-label">Couleur</label>
+      <div id="color-picker" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    </div>
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:4px">
+      <button class="btn btn-ghost" onclick="closeModal('goal-modal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveGoal()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- STEP MODAL -->
+<div class="modal-overlay" id="step-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">Ajouter une étape</span>
+      <button class="modal-close" onclick="closeModal('step-modal')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Nom de l'étape *</label><input class="form-input" id="step-text" placeholder="Ex: Lire le chapitre 1"/></div>
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:4px">
+      <button class="btn btn-ghost" onclick="closeModal('step-modal')">Annuler</button>
+      <button class="btn btn-primary" onclick="addStep()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+const COLORS = ["#6366f1","#06b6d4","#22c55e","#f59e0b","#ef4444","#8b5cf6","#ec4899"];
+const PC = { haute:{label:"Haute",color:"#ef4444",bg:"#fef2f2"}, moyenne:{label:"Moyenne",color:"#f59e0b",bg:"#fffbeb"}, basse:{label:"Basse",color:"#22c55e",bg:"#f0fdf4"} };
+let tasks = [], goals = [], currentTab = "dashboard", editTaskId = null, editGoalId = null, stepGoalId = null;
+let weekOffset = 0, taskFilter = "all", selectedColor = "#6366f1";
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2) }
+function save(){ localStorage.setItem("pp_tasks",JSON.stringify(tasks)); localStorage.setItem("pp_goals",JSON.stringify(goals)) }
+function load(){ try{tasks=JSON.parse(localStorage.getItem("pp_tasks")||"[]"); goals=JSON.parse(localStorage.getItem("pp_goals")||"[]")}catch{} }
+function calcProg(steps){ if(!steps||!steps.length)return 0; return Math.round(steps.filter(s=>s.done).length/steps.length*100) }
+function fmt(d){ return d.toISOString().slice(0,10) }
+
+// ── TABS ──
+function setTab(t){ currentTab=t; document.querySelectorAll(".tab").forEach((b,i)=>{b.classList.toggle("active",["dashboard","tasks","goals","planning"][i]===t)}); render() }
+
+// ── MODALS ──
+function openModal(id){ document.getElementById(id).classList.add("open") }
+function closeModal(id){ document.getElementById(id).classList.remove("open") }
+
+// ── RENDER ──
+function render(){
+  const el = document.getElementById("content");
+  if(currentTab==="dashboard") el.innerHTML = renderDashboard();
+  else if(currentTab==="tasks") el.innerHTML = renderTasks();
+  else if(currentTab==="goals") el.innerHTML = renderGoals();
+  else el.innerHTML = renderPlanning();
+}
+
+function badge(label,color,bg){ return `<span class="badge" style="color:${color};background:${bg};border-color:${color}22">${label}</span>` }
+
+// ── DASHBOARD ──
+function renderDashboard(){
+  const done=tasks.filter(t=>t.done).length, active=tasks.filter(t=>!t.done).length;
+  const high=tasks.filter(t=>!t.done&&t.priority==="haute").length;
+  const gDone=goals.filter(g=>g.progress>=100).length, gAct=goals.filter(g=>g.progress<100).length;
+  const avg=goals.length?Math.round(goals.reduce((a,g)=>a+g.progress,0)/goals.length):0;
+  const cards=[
+    {icon:"✅",label:"Complétées",val:done,color:"#22c55e",bg:"#f0fdf4"},
+    {icon:"⏳",label:"En cours",val:active,color:"#6366f1",bg:"#eef2ff"},
+    {icon:"🔥",label:"Priorité haute",val:high,color:"#ef4444",bg:"#fef2f2"},
+    {icon:"🎯",label:"Obj. actifs",val:gAct,color:"#f59e0b",bg:"#fffbeb"},
+    {icon:"🏆",label:"Obj. atteints",val:gDone,color:"#06b6d4",bg:"#ecfeff"},
+    {icon:"📈",label:"Progression",val:avg+"%",color:"#8b5cf6",bg:"#f5f3ff"},
+  ];
+  const upcoming=tasks.filter(t=>!t.done&&t.date).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,4);
+  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><h2 class="section-title">Tableau de bord</h2></div><p class="section-sub">Vue d'ensemble</p>`;
+  html+=`<div class="stat-grid">`;
+  cards.forEach(c=>{ html+=`<div class="stat-card" style="background:${c.bg}"><div class="stat-icon">${c.icon}</div><div class="stat-val" style="color:${c.color}">${c.val}</div><div class="stat-lbl">${c.label}</div></div>` });
+  html+=`</div>`;
+  if(upcoming.length){
+    html+=`<h3 style="font-size:14px;font-weight:700;color:#374151;margin-bottom:10px">📅 Prochaines échéances</h3>`;
+    upcoming.forEach(t=>{
+      html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f9fafb;border-radius:10px;margin-bottom:7px">
+        <div><div style="font-weight:600;font-size:14px">${t.title}</div><div style="font-size:12px;color:#9ca3af">${t.category}</div></div>
+        <div style="text-align:right"><div style="font-size:12px;font-weight:600;color:#6366f1">${t.date}</div>${badge(PC[t.priority].label,PC[t.priority].color,PC[t.priority].bg)}</div>
+      </div>`;
+    });
+  }
+  if(!tasks.length&&!goals.length){
+    html+=`<div class="empty-state"><div class="empty-icon">🚀</div><div style="font-weight:600;margin-bottom:6px">Commencez dès maintenant !</div>
+      <div style="font-size:13px">Ajoutez des tâches ou des objectifs.</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:14px">
+        <button class="btn btn-primary" onclick="setTab('tasks')">Ajouter une tâche</button>
+        <button class="btn btn-ghost" onclick="setTab('goals')">Créer un objectif</button>
+      </div></div>`;
+  }
+  return html;
+}
+
+// ── TASKS ──
+function renderTasks(){
+  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+    <div><h2 class="section-title">Mes Tâches</h2><p style="color:#6b7280;font-size:13px;margin-top:2px">${tasks.filter(t=>!t.done).length} en cours</p></div>
+    <button class="btn btn-primary" onclick="openAddTask()">+ Ajouter</button></div>
+    <input class="search-input" id="task-search" placeholder="Rechercher..." oninput="renderTaskList()" style="margin-bottom:10px"/>
+    <div style="display:flex;gap:6px;margin-bottom:14px">
+      <button class="filter-btn ${taskFilter==='all'?'active':''}" onclick="setFilter('all')">Toutes</button>
+      <button class="filter-btn ${taskFilter==='active'?'active':''}" onclick="setFilter('active')">En cours</button>
+      <button class="filter-btn ${taskFilter==='done'?'active':''}" onclick="setFilter('done')">Terminées</button>
+    </div>
+    <div id="task-list"></div>`;
+  setTimeout(()=>renderTaskList(),0);
+  return html;
+}
+
+function setFilter(f){ taskFilter=f; render() }
+
+function renderTaskList(){
+  const search=(document.getElementById("task-search")||{}).value||"";
+  let list=[...tasks];
+  if(taskFilter==="active") list=list.filter(t=>!t.done);
+  if(taskFilter==="done") list=list.filter(t=>t.done);
+  list=list.filter(t=>t.title.toLowerCase().includes(search.toLowerCase()));
+  list.sort((a,b)=>{ if(a.done!==b.done)return a.done?1:-1; const po={haute:0,moyenne:1,basse:2}; return (po[a.priority]||1)-(po[b.priority]||1) });
+  const el=document.getElementById("task-list"); if(!el)return;
+  if(!list.length){ el.innerHTML=`<div class="empty-state"><div class="empty-icon">📋</div><div>Aucune tâche trouvée</div></div>`; return }
+  el.innerHTML=list.map(t=>{
+    const pc=PC[t.priority];
+    return `<div class="task-item" style="border-left:4px solid ${t.done?"#e5e7eb":pc.color};background:${t.done?"#f9fafb":"#fff"}">
+      <button class="check-btn ${t.done?"checked":""}" onclick="toggleTask('${t.id}')">${t.done?"✓":""}</button>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:14px;color:${t.done?"#9ca3af":"#111"};text-decoration:${t.done?"line-through":"none"}">${t.title}</div>
+        ${t.description?`<div style="font-size:12px;color:#9ca3af;margin-top:2px">${t.description}</div>`:""}
+        <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">
+          ${badge(pc.label,pc.color,pc.bg)}${badge(t.category,"#6366f1","#eef2ff")}${t.date?badge("📅 "+t.date,"#6b7280","#f3f4f6"):""}
+        </div>
+      </div>
+      <div style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="openEditTask('${t.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="delTask('${t.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function openAddTask(){ editTaskId=null; document.getElementById("task-modal-title").textContent="Nouvelle tâche"; document.getElementById("t-title").value=""; document.getElementById("t-desc").value=""; document.getElementById("t-priority").value="moyenne"; document.getElementById("t-cat").value="Personnel"; document.getElementById("t-date").value=""; openModal("task-modal") }
+function openEditTask(id){ editTaskId=id; const t=tasks.find(x=>x.id===id); if(!t)return; document.getElementById("task-modal-title").textContent="Modifier la tâche"; document.getElementById("t-title").value=t.title; document.getElementById("t-desc").value=t.description||""; document.getElementById("t-priority").value=t.priority; document.getElementById("t-cat").value=t.category; document.getElementById("t-date").value=t.date||""; openModal("task-modal") }
+function saveTask(){ const title=document.getElementById("t-title").value.trim(); if(!title)return; const d={title,description:document.getElementById("t-desc").value,priority:document.getElementById("t-priority").value,category:document.getElementById("t-cat").value,date:document.getElementById("t-date").value}; if(editTaskId){tasks=tasks.map(t=>t.id===editTaskId?{...t,...d}:t)}else{tasks.push({id:uid(),...d,done:false,createdAt:Date.now()})}; save(); closeModal("task-modal"); render() }
+function toggleTask(id){ tasks=tasks.map(t=>t.id===id?{...t,done:!t.done}:t); save(); renderTaskList() }
+function delTask(id){ tasks=tasks.filter(t=>t.id!==id); save(); renderTaskList() }
+
+// ── GOALS ──
+function renderGoals(){
+  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+    <div><h2 class="section-title">Mes Objectifs</h2><p style="color:#6b7280;font-size:13px;margin-top:2px">${goals.filter(g=>g.progress<100).length} en cours</p></div>
+    <button class="btn btn-primary" onclick="openAddGoal()">+ Créer</button></div>
+    <div style="height:8px"></div>`;
+  if(!goals.length){ html+=`<div class="empty-state"><div class="empty-icon">🎯</div><div style="font-weight:600">Aucun objectif défini</div><div style="font-size:13px;margin-top:4px">Créez votre premier objectif !</div></div>`; return html }
+  goals.forEach(g=>{
+    const done=g.progress>=100, st=g.steps||[], sd=st.filter(s=>s.done).length;
+    html+=`<div class="goal-card" style="border-top:4px solid ${g.color||"#6366f1"}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:15px">${done?"🏆 ":""}${g.title}${done?` <span class="badge" style="color:#16a34a;background:#f0fdf4;border-color:#16a34a22">Atteint !</span>`:""}</div>
+          ${g.description?`<div style="font-size:12px;color:#9ca3af;margin-top:3px">${g.description}</div>`:""}
+          <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap">${badge(g.category,"#6366f1","#eef2ff")}${g.deadline?badge("📅 "+g.deadline,"#6b7280","#f3f4f6"):""}</div>
+        </div>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-ghost btn-sm" onclick="openEditGoal('${g.id}')">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="delGoal('${g.id}')">🗑️</button>
+        </div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#6b7280;margin-bottom:4px">
+          <span>Progression ${st.length?`(${sd}/${st.length} étapes)`:""}</span>
+          <span style="font-weight:800;color:${g.color||"#6366f1"};font-size:14px">${g.progress}%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:${g.progress}%;background:${g.color||"#6366f1"}"></div></div>
+        ${!st.length?`<div style="font-size:11px;color:#d1d5db;margin-top:4px">Ajoutez des étapes pour suivre automatiquement</div>`:""}
+      </div>
+      <div style="margin-bottom:8px">
+        <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:7px">📌 Étapes ${st.length?`<span style="font-weight:400;color:#9ca3af">— ${sd}/${st.length} complétées</span>`:""}</div>
+        ${st.length===0?`<div style="font-size:12px;color:#9ca3af;font-style:italic;margin-bottom:6px">Aucune étape définie</div>`:""}
+        ${st.map((s,i)=>`<div class="step-item ${s.done?"done":""}">
+          <span class="step-num">#${i+1}</span>
+          <button class="step-check" style="border-color:${s.done?g.color||"#6366f1":"#d1d5db"};background:${s.done?g.color||"#6366f1":"transparent"}" onclick="toggleStep('${g.id}','${s.id}')">${s.done?"✓":""}</button>
+          <span style="flex:1;font-size:13px;color:${s.done?"#9ca3af":"#374151"};text-decoration:${s.done?"line-through":"none"}">${s.text}</span>
+          <button onclick="delStep('${g.id}','${s.id}')" style="background:none;border:none;cursor:pointer;color:#d1d5db;font-size:15px">✕</button>
+        </div>`).join("")}
+        <button class="add-step-btn" onclick="openStepModal('${g.id}')">+ Ajouter une étape</button>
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+function buildColorPicker(){
+  const cp=document.getElementById("color-picker"); if(!cp)return;
+  cp.innerHTML=COLORS.map(c=>`<button onclick="selectColor('${c}')" style="width:28px;height:28px;border-radius:50%;background:${c};border:${selectedColor===c?"3px solid #111":"3px solid transparent"};cursor:pointer"></button>`).join("");
+}
+function selectColor(c){ selectedColor=c; buildColorPicker() }
+
+function openAddGoal(){ editGoalId=null; selectedColor="#6366f1"; document.getElementById("goal-modal-title").textContent="Nouvel objectif"; document.getElementById("g-title").value=""; document.getElementById("g-desc").value=""; document.getElementById("g-cat").value="Personnel"; document.getElementById("g-deadline").value=""; openModal("goal-modal"); setTimeout(buildColorPicker,50) }
+function openEditGoal(id){ editGoalId=id; const g=goals.find(x=>x.id===id); if(!g)return; selectedColor=g.color||"#6366f1"; document.getElementById("goal-modal-title").textContent="Modifier l'objectif"; document.getElementById("g-title").value=g.title; document.getElementById("g-desc").value=g.description||""; document.getElementById("g-cat").value=g.category; document.getElementById("g-deadline").value=g.deadline||""; openModal("goal-modal"); setTimeout(buildColorPicker,50) }
+function saveGoal(){ const title=document.getElementById("g-title").value.trim(); if(!title)return; const d={title,description:document.getElementById("g-desc").value,category:document.getElementById("g-cat").value,deadline:document.getElementById("g-deadline").value,color:selectedColor}; if(editGoalId){goals=goals.map(g=>g.id===editGoalId?{...g,...d}:g)}else{goals.push({id:uid(),...d,progress:0,steps:[],createdAt:Date.now()})}; save(); closeModal("goal-modal"); render() }
+function delGoal(id){ goals=goals.filter(g=>g.id!==id); save(); render() }
+function openStepModal(gid){ stepGoalId=gid; document.getElementById("step-text").value=""; openModal("step-modal") }
+function addStep(){ const text=document.getElementById("step-text").value.trim(); if(!text||!stepGoalId)return; goals=goals.map(g=>{ if(g.id!==stepGoalId)return g; const steps=[...(g.steps||[]),{id:uid(),text,done:false}]; return{...g,steps,progress:calcProg(steps)} }); save(); closeModal("step-modal"); render() }
+function toggleStep(gid,sid){ goals=goals.map(g=>{ if(g.id!==gid)return g; const steps=g.steps.map(s=>s.id===sid?{...s,done:!s.done}:s); return{...g,steps,progress:calcProg(steps)} }); save(); render() }
+function delStep(gid,sid){ goals=goals.map(g=>{ if(g.id!==gid)return g; const steps=g.steps.filter(s=>s.id!==sid); return{...g,steps,progress:calcProg(steps)} }); save(); render() }
+
+// ── PLANNING ──
+function renderPlanning(){
+  const today=new Date();
+  const start=new Date(today); const day=start.getDay()||7; start.setDate(start.getDate()-day+1+weekOffset*7);
+  const days=Array.from({length:7},(_,i)=>{ const d=new Date(start); d.setDate(start.getDate()+i); return d });
+  const dn=["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+  const todayStr=fmt(today);
+  const wStart=days[0].toLocaleDateString("fr-FR",{month:"short",day:"numeric"});
+  const wEnd=days[6].toLocaleDateString("fr-FR",{month:"short",day:"numeric"});
+  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <h2 class="section-title">Planning</h2>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button class="btn btn-ghost btn-sm" onclick="changeWeek(-1)">◀</button>
+      <span style="font-size:11px;font-weight:600;color:#6b7280">${wStart} – ${wEnd}</span>
+      <button class="btn btn-ghost btn-sm" onclick="changeWeek(1)">▶</button>
+      ${weekOffset!==0?`<button class="btn btn-ghost btn-sm" onclick="changeWeek(0)">Auj.</button>`:""}
+    </div></div>
+  <div class="week-grid">`;
+  days.forEach((d,i)=>{
+    const isT=fmt(d)===todayStr;
+    const dt=tasks.filter(t=>t.date===fmt(d));
+    html+=`<div class="day-cell ${isT?"today":""}">
+      <div class="day-header"><div class="day-name">${dn[i]}</div><div class="day-num">${d.getDate()}</div></div>
+      <div class="day-tasks">${dt.length?dt.map(t=>`<div class="day-task-chip" style="background:${t.done?"#f3f4f6":PC[t.priority].bg};color:${t.done?"#9ca3af":PC[t.priority].color}">${t.title}</div>`).join(""):`<div style="font-size:9px;color:#e5e7eb;text-align:center;margin-top:4px">—</div>`}</div>
+    </div>`;
+  });
+  html+=`</div>`;
+  const noDate=tasks.filter(t=>!t.date&&!t.done);
+  html+=`<h3 style="font-size:14px;font-weight:700;color:#374151;margin:18px 0 10px">📋 Tâches sans date</h3>`;
+  if(!noDate.length){ html+=`<div style="font-size:13px;color:#9ca3af">Toutes les tâches ont une date 🎉</div>` }
+  else noDate.forEach(t=>{ html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#f9fafb;border-radius:8px;margin-bottom:6px">
+    <span style="font-size:13px;font-weight:500">${t.title}</span>
+    <div style="display:flex;gap:5px">${badge(PC[t.priority].label,PC[t.priority].color,PC[t.priority].bg)}${badge(t.category,"#6366f1","#eef2ff")}</div></div>` });
+  return html;
+}
+function changeWeek(d){ if(d===0)weekOffset=0; else weekOffset+=d; render() }
+
+// ── INIT ──
+document.getElementById("today-date").textContent=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
+
+// PWA Manifest dynamique
+const manifest={name:"Productivité Pro",short_name:"Prod Pro",description:"Gestion de tâches, objectifs et planning",start_url:"./",display:"standalone",background_color:"#f8f9fb",theme_color:"#6366f1",orientation:"portrait",icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='32' fill='%236366f1'/%3E%3Ctext x='96' y='130' text-anchor='middle' font-size='100'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E",sizes:"192x192",type:"image/svg+xml"},{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='80' fill='%236366f1'/%3E%3Ctext x='256' y='350' text-anchor='middle' font-size='280'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E",sizes:"512x512",type:"image/svg+xml"}]};
+const blob=new Blob([JSON.stringify(manifest)],{type:"application/json"});
+document.getElementById("manifest-placeholder").href=URL.createObjectURL(blob);
+
+// Service Worker inline
+if("serviceWorker" in navigator){
+  const swCode=`
+    const CACHE="prodpro-v1";
+    self.addEventListener("install",e=>{ e.waitUntil(caches.open(CACHE).then(c=>c.addAll(["./"]).catch(()=>{}))) });
+    self.addEventListener("fetch",e=>{ e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>new Response("Offline",{status:503})))) });
+  `;
+  const swBlob=new Blob([swCode],{type:"application/javascript"});
+  navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
+}
+
+// Install prompt
+let deferredPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferredPrompt=e; showInstallBanner() });
+function showInstallBanner(){
+  const existing=document.querySelector(".install-banner"); if(existing)return;
+  const banner=document.createElement("div"); banner.className="install-banner show";
+  banner.innerHTML=`<span style="font-size:22px">📲</span><div style="flex:1"><div style="font-weight:700;font-size:14px">Installer l'application</div><div style="font-size:12px;opacity:.85">Accès rapide depuis votre écran d'accueil</div></div><button onclick="installApp()" style="background:#fff;color:#6366f1;border:none;border-radius:8px;padding:7px 12px;font-weight:700;font-size:13px;cursor:pointer">Installer</button><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;opacity:.7">✕</button>`;
+  document.getElementById("content").prepend(banner);
+}
+async function installApp(){ if(!deferredPrompt)return; deferredPrompt.prompt(); const{outcome}=await deferredPrompt.userChoice; deferredPrompt=null; document.querySelector(".install-banner")?.remove() }
+
+load(); render();
+</script>
+</body>
+</html>
